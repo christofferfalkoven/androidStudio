@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 userDb.child(oppositeUserGender).child(userId).child("connections").child("notInterested").child(currentUid).setValue(true);
                 Toast.makeText(MainActivity.this, "Left", Toast.LENGTH_SHORT).show();
             }
-
+            /*THIS COMMENT*/
             @Override
             public void onRightCardExit(Object dataObject) {
                 cards obj = (cards) dataObject;
