@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 cards obj = (cards) dataObject;
                 String userId = obj.getUserId();
                 userDb.child(oppositeUserGender).child(userId).child("connections").child("Interested").child(currentUid).setValue(true);
+                isMatch(userId);
                 Toast.makeText(MainActivity.this, "Right", Toast.LENGTH_SHORT).show();
             }
 
@@ -100,6 +102,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void isMatch(String userId) {
+        DatabaseReference currentUserMatchesDb = userDb.child(userGender).child(currentUid).child("connections").child("Interested").child(userId);
+        currentUserMatchesDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Toast.makeText(MainActivity.this, "Match found!", Toast.LENGTH_LONG).show();
+                    userDb.child(oppositeUserGender).child(dataSnapshot.getKey()).child("connections").child("matches").child(currentUid).setValue(true);
+                    userDb.child(userGender).child(currentUid).child("connections").child("matches").child(dataSnapshot.getKey()).setValue(true);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     public void logoutUser(View view) {
