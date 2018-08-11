@@ -136,10 +136,13 @@ public class MainActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()
                    && !(dataSnapshot.child("connections").child("notInterested").hasChild(currentUid))
                    && !(dataSnapshot.child("connections").child("Interested").hasChild(currentUid))){
-
-                       cards newCard = new cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString());
-                       rowItems.add(newCard);
-                       arrayAdapter.notifyDataSetChanged();
+                        String profileImageUrl = "default";
+                        if (!dataSnapshot.child("profileImageUrl").getValue().equals("default")){
+                            profileImageUrl = dataSnapshot.child("profileImageUrl").getValue().toString();
+                        }
+                        cards newCard = new cards(dataSnapshot.getKey(), dataSnapshot.child("name").getValue().toString(), profileImageUrl);
+                        rowItems.add(newCard);
+                        arrayAdapter.notifyDataSetChanged();
                 }
             }
             @Override
@@ -211,4 +214,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void goToSettings(View view) {
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        intent.putExtra("userGender", userGender);
+        startActivity(intent);
+        return;
+    }
 }
